@@ -1,18 +1,21 @@
-import React , {useContext,useState} from "react";
+import React , {useContext,useState } from "react";
 import NoteContext from "../context/notes/NoteContext";
 
 const AddNote = () => {
     const context = useContext(NoteContext);
-  const { addNote } = context;
-  const [note, setNote] = useState({title: "" , description:"",tag:"default"})
-  const handleClick = (e)=>{
-    e.preventDefault();
-    addNote(note.title , note.description , note.tag);
-  }
+    const {addNote} = context;
 
-  const onChange = (e)=>{
-    setNote({...note ,[e.target.name]:e.target.value })
-  }
+    const [note, setNote] = useState({title: "", description: "", tag: ""})
+
+    const handleClick = (e)=>{
+        e.preventDefault();
+        addNote(note.title, note.description, note.tag);
+        setNote({title: "", description: "", tag: ""}) //to empty the input feilds after adding a note
+    }
+
+    const onChange = (e)=>{
+        setNote({...note, [e.target.name]: e.target.value})
+    }
   return (
     <div>
       <div className="container my-4">
@@ -29,6 +32,9 @@ const AddNote = () => {
               name="title"
               aria-describedby="emailHelp"
               onChange={onChange}
+              required
+              value={note.title}
+              minLength={5}
             />
             
           </div>
@@ -42,6 +48,9 @@ const AddNote = () => {
               id="description"
               name="description"
               onChange={onChange}
+              required
+              value={note.description}
+              minLength={5}
             />
           </div>
           <div className="mb-3">
@@ -54,10 +63,13 @@ const AddNote = () => {
               id="tag"
               name="tag"
               onChange={onChange}
+              required
+              value={note.tag}
+              minLength={5}
             />
           </div>
          
-          <button type="submit" onClick={handleClick} className="btn btn-primary">
+          <button disabled={note.title.length<5 || note.description.length<5} type="submit" onClick={handleClick} className="btn btn-primary">
             Add Note
           </button>
         </form>

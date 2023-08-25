@@ -1,7 +1,7 @@
 import React , {useContext,useState } from "react";
 import NoteContext from "../context/notes/NoteContext";
 
-const AddNote = () => {
+const AddNote = (props) => {
     const context = useContext(NoteContext);
     const {addNote} = context;
 
@@ -11,7 +11,8 @@ const AddNote = () => {
         e.preventDefault();
         addNote(note.title, note.description, note.tag);
         setNote({title: "", description: "", tag: ""}) //to empty the input feilds after adding a note
-    }
+        props.showAlert("Note Added succesfully" , "success");
+      }
 
     const onChange = (e)=>{
         setNote({...note, [e.target.name]: e.target.value})

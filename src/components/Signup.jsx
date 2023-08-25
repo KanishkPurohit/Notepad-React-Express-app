@@ -1,28 +1,30 @@
 import React,{useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Signup = (props) => {
 
-    const [credentials, setCredentials] = useState({email:"",password:""})
-
+    const [credentials, setCredentials] = useState({name:"",email:"",password:"",cpassword:""})
+    let navigate = useNavigate();
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        const response = await fetch("http://localhost:5000/api/auth/login", {
+        const {name,email,password}=credentials;
+        const response = await fetch("http://localhost:5000/api/auth/createuser", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body:JSON.stringify({email:credentials.email,password:credentials.password})
+            body:JSON.stringify({name,email,password})
           });
           const json = await response.json()
           console.log(json);
           if(json.success){
             //save the auth token and redirect
-            localStorage.setItem('token',json.authtoken);
+            localStorage.setItem('token',json.authToken);
             navigate('/')
+            props.showAlert("Successfully created your account" , "success")
           }
           else{
-            alert("invalid cred")
+            props.showAlert("incalid credentials" , "danger")
           }
     }
     const onChange = (e)=>{
@@ -30,7 +32,8 @@ const Signup = () => {
       }
 
   return (
-    <div>
+    <div className='mt-2'>
+      <h1>Create an account to continue</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
@@ -41,7 +44,7 @@ const Signup = () => {
             className="form-control"
             id="email"
             aria-describedby="emailHelp"
-            name="email" onChange={onChange}
+            name="email" onChange={onChange} required 
           />
          
         </div>
@@ -53,7 +56,7 @@ const Signup = () => {
             type="text"
             className="form-control"
             id="name"
-            name="name" onChange={onChange}
+            name="name" onChange={onChange} required 
           />
          
         </div>
@@ -65,7 +68,7 @@ const Signup = () => {
             type="password"
             className="form-control"
             id="password"
-            name="password" onChange={onChange}
+            name="password" onChange={onChange} required minLength={5}
           />
         </div>
         <div className="mb-3">
@@ -76,7 +79,7 @@ const Signup = () => {
             type="password"
             className="form-control"
             id="cpassword"
-            name="cpassword" onChange={onChange}
+            name="cpassword" onChange={onChange} required minLength={5}
           />
         </div>
 
